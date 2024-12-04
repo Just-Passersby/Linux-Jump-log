@@ -1,0 +1,2 @@
+# Linux跳轉紀錄
+記錄我從Windows跳轉到Linux的過程與紀錄
