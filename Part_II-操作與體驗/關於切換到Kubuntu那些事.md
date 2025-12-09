@@ -1,4 +1,4 @@
-# 甘於我切換到Kubuntu的那些事
+# 關於我切換到Kubuntu的那些事
 我今年1月正式把主力從Windows轉移至Ubuntu，當時選擇的是Ubuntu-Budgie，結果不到1年，我就把我的Ubuntu-Budgie 24.04 LTS重灌成了Kubuntu 24.04 LTS。
 
 當我在紀錄這篇心得的時候，我已經使用Kubuntu 24.04一週了，這裡有些心得。（小插曲：重灌的時候忘記把書籤匯出也沒開同步，一堆本子消失了（悲））
