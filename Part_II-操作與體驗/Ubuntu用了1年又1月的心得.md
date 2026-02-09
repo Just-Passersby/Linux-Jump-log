@@ -21,8 +21,10 @@
 
     更要命的是非系統套件，比如Steam會無法讀取非系統碟磁區，這導致我很多遊戲無法讀取。
 
+    也因為這個錯誤，我受此影響跑去學習LFS看有沒有解方(但很顯然那裡只要會Ctrl + C和Ctrl + V，且涉及GUI要到BLFS，所以沒有)。
+
   - Kernel更新容易出問題
-    在Ubuntu-Budgie上很容易遇到`VFS: Unable to mount root fs on unknown-block(0,0)`這個錯誤(可以參考[Ubuntu半年使用心得](./Ubuntu半年使用心得.md))，雖然問題很好解決，但是更新5次碰到2、3次就算有經驗還是很令人糟心，我受此影響跑去學習LFS看有沒有解方(但很顯然那裡只要會Ctrl + C和Ctrl + V，且涉及GUI要到BLFS，所以沒有)。
+    在Ubuntu-Budgie上很容易遇到`VFS: Unable to mount root fs on unknown-block(0,0)`這個錯誤(可以參考[Ubuntu半年使用心得](./Ubuntu半年使用心得.md))，雖然問題很好解決，但是更新5次碰到2、3次就算有經驗還是很令人糟心。
 
 不過`mount root fs`的錯誤因為我使用Kubuntu只有經歷過一次HWE更新，雖然沒有錯誤我也很難說Kubuntu是不是真的很穩，反正我[這篇](./Ubuntu半年使用心得.md)有提到解決方法，所以為了Wayland (KDE Plasma 5可以用Wayland)以及使用BTRFS來保障系統穩定性我決定重灌Kubuntu (當然Ubuntu的BTRFS設定跟蠻荒一樣，要自己去設定，至少Subvolumes預設切的很適合TimeShift)，至於我當初跳到Kubuntu的其他心路歷程以及我當時碰過得坑可以參考[這篇](./關於切換到Kubuntu那些事.md)，裡面還有談到EFI分區搬移的問題(該死的Windows安裝時強姦Linux設定的EFI分區)。
 
