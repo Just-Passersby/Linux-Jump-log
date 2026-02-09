@@ -1,7 +1,7 @@
 # Ubuntu半年使用心得
 不知不覺使用了半年，原本其實可能這件事會被我忘了紀錄，直到我出遠門回來升級Linux碰到了問題，請看這張圖![Kernel Panic](../Pictures/Kernel_Panic.jpg)
 
-一開始很慌阿，丟給幾個有玩Linux，甚至是當主力的朋友，但又因為發生在凌晨3點，跟本沒人醒著，我注意到底下有一行報錯資訊：`VFS: Unable to mount root fs on unknown-block(0,0)`，我直接去瀏覽器搜尋這個問題，馬讓讓我找到[Solution](https://dev.to/dm8ry/fixing-the-kernel-panic-not-syncing-vfs-unable-to-mount-root-fs-on-unknown-block00-error-3ado)
+一開始很慌阿，丟給幾個有玩Linux，甚至是當主力的朋友，但又因為發生在凌晨3點，跟本沒人醒著，我注意到底下有一行報錯資訊：`VFS: Unable to mount root fs on unknown-block(0,0)`，我直接去瀏覽器搜尋這個問題，馬上讓我找到[Solution](https://dev.to/dm8ry/fixing-the-kernel-panic-not-syncing-vfs-unable-to-mount-root-fs-on-unknown-block00-error-3ado)
 
 往好的方面想，這再次印證了Linux有問題、報錯就算不知道Solution它也能明確告訴你問題是什麼，那網路也有人碰過或者你是Very Super Ultimate Powerful Linux user，我是說或者你很有經驗，你有辦法透過查詢或者依賴自身知識儲備來對問題進行修復，不像Windows，不穩定的時候隨便碰一下不是性能大幅降低，就是直接BSOD，喔不，好像Windows 12要變成「B(Black)SOD」了，然後上面的報錯碼還是一樣令人無解。
 

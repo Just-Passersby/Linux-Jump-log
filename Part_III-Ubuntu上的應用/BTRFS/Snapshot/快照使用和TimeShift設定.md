@@ -1,2 +1,3 @@
-# TimeShift使用與設定
+# 快照使用和TimeShift設定
 
+# BTRFS新增Snapshot
