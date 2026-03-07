@@ -22,10 +22,8 @@
 > - `-r`: 是建立唯讀快照的意思，不加`-r`代表這個快照可以隨意修改。這是可選項。
 > - `<subvolume>`: 這裡並不是`btrfs subvolume list`的子卷名稱，而是你要Snapshot的目錄位置，該目錄必須有掛載subvolume。
 > - `{ <subdir>/<name> | <subdir> }`: `subdir`指的是你要放snapshot的位置，如果你想要指定位置後同時改名可以在`subdir`後面用斜線`/`分隔並命名該Snapshot的名字。
->
->   
 
-我就以我的遊戲硬碟為例，相關設定環境請參考[BTRFS使用原則與系統fstab設定](../basic/BTRFS使用原則與系統fstab設定.md)，我以我的team遊戲庫為例，這裡使用`compsize`觀察空間佔用變化，可以參考[BTRFS其他套件與空間優化](../basic/BTRFS其他套件與空間優化.md)如何安裝與使用。
+我就以我的遊戲硬碟為例，相關設定環境請參考[BTRFS使用原則與系統fstab設定](../basic/BTRFS使用原則與系統fstab設定.md)，我等等會對Steam遊戲庫操作快照，這裡使用`compsize`觀察空間佔用變化，可以參考[BTRFS其他套件與空間優化](../basic/BTRFS其他套件與空間優化.md)如何安裝與使用。
 
 這是我目前這顆硬碟快照前的狀態：
 ```bash
@@ -130,7 +128,7 @@ $ find -ls
      2  0  drwxr-xr-x  1  user  users     0  Jul 30  12:34  ./snap1/subvol2
 ```
 
-那我們再來建立一個唯讀子卷，看看差異
+那我們再來建立一個唯讀子卷，看看跟一般子卷的差異：
 ```bash
 $ sudo btrfs subvolume snapshot -r SteamLibrary/ _Snapshots/ReadOnly_Steam
 Create a readonly snapshot of 'SteamLibrary/' in '_Snapshots/ReadOnly_Steam'
@@ -141,13 +139,13 @@ rm: cannot remove '_Snapshots/ReadOnly_Steam/libraryfolder.vdf': Read-only file 
 $ sudo rm -rf _Snapshots/ReadOnly_Steam/libraryfolder.vdf 
 rm: cannot remove '_Snapshots/ReadOnly_Steam/libraryfolder.vdf': Read-only file system
 ```
-凶悍的不行！ㄟ～☝️🤓 我想起來，`lsattr`是可以看到檔案如果有`i`的標示該檔案即使root也只有唯讀的權限，必須透過`chattr`解除鎖定才可以修改，那我們來看看他的狀態吧：
+凶悍的不行！欸～☝️🤓 我想起來，`lsattr`是可以看到檔案如果有`i`的標示該檔案即使root也只有唯讀的權限，必須透過`chattr`解除鎖定才可以修改，那我們來看看他的狀態吧：
 ```bash
 $ lsattr _Snapshots/
 ---------------------- _Snapshots/SteamLibrary
 ---------------------- _Snapshots/ReadOnly_Steam
 ```
-阿這...非常之凶狠阿，你會用`lsattr`你還是找不到問題...真正能看到差異的地方，就是用`btrfs subvolume show $SUBVOL`來看子卷狀態：
+阿這...非常之凶狠阿，就算你會用`lsattr`你還是找不到問題...真正能看到差異的地方，就是用`btrfs subvolume show $SUBVOL`來看子卷狀態：
 ```bash
 $ sudo btrfs subvolume show _Snapshots/SteamLibrary/
 @FURY_2T/_Snapshots/SteamLibrary
@@ -223,7 +221,7 @@ $ sudo rm -rf _Snapshots/ReadOnly_Steam/libraryfolder.vdf
 
 > btrfs-progs是支持類似Cisco指令簡寫的，比如這裡`property`可以縮寫成`prop`，這在man page有展示出來。
 
-雖然子卷可以像是一般的目錄一樣用`rm -rf`移除，但是當你手握`btrfs-progs`時，即使快照唯讀，依舊可以透過`btrfs subvolume delete $SUBVOL`刪除：
+雖然子卷可以像是一般的目錄一樣用`rm -rf`移除，但是碰到這種唯讀子卷就算你有root也沒用，只有你手握`btrfs-progs`時，即使快照/子卷唯讀，依舊可以透過`btrfs subvolume delete $SUBVOL`刪除：
 ```bash
 $ sudo btrfs property set _Snapshots/ReadOnly_Steam/ ro true
 $ rm -rf _Snapshots/ReadOnly_Steam/
