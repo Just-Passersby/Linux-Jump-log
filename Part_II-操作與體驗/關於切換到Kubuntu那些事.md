@@ -97,7 +97,7 @@
 4. 關機後不要開機，斷電按住開機按（機殼或是主機板的都可以），按住10~15s，聽起來很玄學，但這樣做（Gemini 3 Pro說）可以把主機板的殘存的電流放掉，讓主機板的Super I/O和南橋晶片放電，透過放電讓晶片把主機板的開機磁區狀態忘掉，~~不管Gemini 3 Pro說的對不對反正~~親自測試有效果，不做只做到第三驟還是會卡99，然後要再重複執行第三步把Dirty bit清掉。
 
 ### 預防勝過修復
-如果各位還有想要安裝雙系統的，要麼你先安裝Windows，要麼你裝完Linux後尤其希望Windows不能染指你的作業系統，除了盡量避免使用Ext4Fsd或winBTRFS，如果你希望微軟不能污染你的Linux EFI分區或者想像我一樣做硬碟隔離的，在安裝時用盡一切手段不要讓你的Windows能夠掃描到你Linux的EFI，比如物理拔除，或者像我這種高階主機板有導熱貼不好拔的可以透過BIOS或者在安裝前透過快捷鍵打開CMD把你的Linux系統碟隔離。
+如果各位還有想要安裝雙系統的，要麼你先安裝Windows，要麼你裝完Linux後尤其希望Windows不能染指你的作業系統，除了盡量避免使用Ext4Fsd或winBTRFS，如果你希望微軟不能污染你的Linux EFI分區或者想像我一樣做硬碟隔離的，在安裝時用盡一切手段不要讓你的Windows能夠掃描到你Linux的EFI，比如物理拔除，如果是像我這種高階主機板有導熱貼不好拔的可以透過BIOS或者在安裝前透過快捷鍵打開CMD把你的Linux系統碟隔離。
 
 ## 從Mutter到Kwin，從X11到Wayland
 其實在用Ubuntu-Budgie一段時間後看到KDE Plasma稍做設定可以使用Wallpaper Engine就有點心動了，又看到KDE Plasma的可自訂程度很高又更新動了，所以決定換了顯示卡（要買的時候一直被XX屋卡住，e04su3su;6ru 19 ）就來重灌Kubuntu 24.04 LTS，就在我寫文章(12/9)的上上個週五我的提前買的新卡PowerColor RX9070XT Hellhound Spectral White到貨了，本來要等RTX 5080 Super買個24G大VRAM，結果DRAM產能全被AI公司買走...，連帶影響我訂卡那周AMD宣佈12月全系列調漲10%，NVIDIA宣佈由AIC自行採購GDDR7...總之話說回來，在下訂後我很早之前就把Kubuntu 24.04.2 LTS放入到Ventory USB裡面，結果要用發現好像又壞了...，要去Kubuntu官網檢查結果發現Ubuntu因為HWE(Hardware Enablement)的關係已經更新到了Kubuntu 24.04.3，安裝並複製到Ventory USB後跑完檔案驗證，沒問題我就透過LiveCD打開Kubuntu 24.04.3 LTS，我感受到全新的世界，是一個比我Ubuntu-Budgie和Windows流暢的世界，所以這次更新讓我的RTL8125終於不用先用無線網路安裝Ethernet的dkms了，所以這次的安裝體驗也做到了真正的開箱使用。

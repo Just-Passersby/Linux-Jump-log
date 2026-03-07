@@ -34,7 +34,10 @@ BTRFS除了支援快照以外還有另一大殺手鐧就是資料壓縮，主流
 若沒指定壓縮等級，直接輸入`compress=zstd`預設使用3級壓縮。
 
 > 歷史補充：
-> 一開始BTRFS可以說幾乎是爛尾狀態，丟到BTRFS的資料容易消失或是有問題，隨著Red Hat把BTRFS從格式化選項中拔掉可以說基本被打入冷宮，直到Meta要在組織內部數大量Linux Server同時又需要CoW。隨著Meta下場加入開發，BTRFS從Gzip（壓縮率高但壓縮耗時）和LZo（壓縮與解壓縮非常快但壓縮率低）這些不太理想的選擇中出現了Zstandard (Zstd)這個壓縮率高且解壓速度快的壓縮法，並且Zstd在不同的壓縮等級下解壓速度還一致。
+> 
+> 一開始BTRFS可以說幾乎是爛尾狀態，丟到BTRFS的資料容易消失或是有問題，隨著Red Hat把BTRFS從格式化選項中拔掉可以說基本被打入冷宮，直到Meta要在組織內部數大量Linux Server同時又需要CoW。隨著Meta下場加入開發，BTRFS從Gzip（壓縮率高但壓縮耗時）和LZo（壓縮與解壓縮非常快但壓縮率低）這些不太理想的選擇中出現了Zstandard (Zstd)，使得BTRFS得以被Fedora等主流發行版納為預設。
+> 
+> Zstandard的優勢在於只在壓縮時吃CPU，解壓縮時相對不吃CPU，無論壓縮等級是1還是23，速度基本一致，官方Benchmark基本都在1800 MB/s以上，速度快到用在SATA SSD上是SATA頻寬會先吃滿，變成I/O Bound，官方Benchmark可以[看這裡](https://facebook.github.io/zstd/)
 
 那這就是我改完`/etc/fstab`根目錄部份的設定的樣子，提供參考：
 ```bash
@@ -184,7 +187,7 @@ sudo btrfs filesystem defragment -r -v -czstd $PATH
 > 需要注意的是重組會強制把資料變成連續資料段，SSD對資料碎片化不敏感以外，重組會破壞reflink，導致你的硬碟空間利用大幅上升（在你使用越多reflink複製檔案或者你有去重時更為明顯），而且重組本身也會對 CPU (尤其又有使用壓縮)和硬碟造成大量IO，這也會提昇SSD的磨損，所以如果你是SSD為了壓縮而執行重組，這條指令**只要執行一次**就好
 
 # 下一步
-那做設定和維護後，就可以處理快照和去重(Deduplication)了，在去重之前我建議先學會和設定[快照](../Snapshot/快照使用和TimeShift設定.md)
+那做設定和維護後，就可以處理快照和去重(Deduplication)了，在去重之前我建議先學會和設定[快照](../Snapshot/Snapshot實做與原理.md)
 
 # Reference
 - [Arch wiki - BTRFS](https://wiki.archlinux.org/title/Btrfs)
@@ -192,6 +195,9 @@ sudo btrfs filesystem defragment -r -v -czstd $PATH
 - [BTRFS documentation](https://btrfs.readthedocs.io/en/latest/)
   - [Subvolumes](https://btrfs.readthedocs.io/en/latest/Subvolumes.html)
   - [Balance](https://btrfs.readthedocs.io/en/latest/Balance.html)
+  - [Troubleshooting pages](https://btrfs.readthedocs.io/en/latest/trouble-index.html)
 - [Oracle Linux Blog - Exploring the Discard Mechanism of Btrfs Filesystem](https://blogs.oracle.com/linux/btrfs-discard)
 - `man 5 btrfs`
 - [Btrfs balance stuck and no way to resume or cancel (No space left)](https://www.reddit.com/r/btrfs/comments/zfdbvz/btrfs_balance_stuck_and_no_way_to_resume_or/?show=original)
+- [SUSE Wiki - SDB:BTRFS](https://en.opensuse.org/SDB:BTRFS)
+- [Facebook GitHub Page - Zstandard](https://facebook.github.io/zstd/)
