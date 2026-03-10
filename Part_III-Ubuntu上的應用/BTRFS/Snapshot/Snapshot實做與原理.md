@@ -4,9 +4,9 @@
 
 可以看看官方[Docs](https://btrfs.readthedocs.io/en/latest/Subvolumes.html#nested-subvolumes)，Snapshot僅有在Subvolume章節的Nested subvolumes部份出現Snapshot的指令，至於BTRFS manual page，也是把Snapshot相關操作放在`man btrfs-subvolume`裡面。
 
-但從官方文件並不能說明為甚麼要把Snapshot放到Subvolume裡面，如果說官方文件是基於設計和理論寫出來的，也就是說，Snapshot**等於**Subvolume！欸不是，你是不是在說傻話？其實不然，因為BTRFS如同它的名字**B-Tree File System**，所有東西都是B-Tree，無論是Storage Pool、每一筆資料還是Metadata都是以B-Tree的形式儲存，有關於BTRFS的Snapshot的理論細節[Farseerfc的文章](https://farseerfc.me/btrfs-vs-zfs-difference-in-implementing-snapshots.html)寫的很好，這篇文章也能說明為甚麼Snapshot以官方的角度而言，是歸類在Subvolume而不是獨立的Features，同時也說明為甚麼Root Subvolume ID是5，至於256才是該磁區第一個被指令建立的SubVolume的ID(中間ID一路保留到255)。
+但從官方文件並不能說明為甚麼要把Snapshot放到Subvolume裡面，如果說官方文件是基於設計和理論寫出來的，我們可以推導出這個結論：Snapshot**等於**Subvolume！欸不是，你是不是在說傻話？其實不然，因為BTRFS如同它的名字**B-Tree File System**，所有東西都是B-Tree，無論是Storage Pool、每一筆資料還是Metadata都是以B-Tree的形式儲存，有關於BTRFS的Snapshot的理論細節[Farseerfc的文章](https://farseerfc.me/btrfs-vs-zfs-difference-in-implementing-snapshots.html)寫的很好，這篇文章也能說明為甚麼Snapshot以官方的角度而言，是歸類在Subvolume而不是獨立的Features，同時也說明為甚麼Root Subvolume ID是5，至於256才是該磁區第一個被指令建立的SubVolume的ID(中間ID一路保留到255)。
 
-> 在此，無論你有沒有看過或學過ZFS，BTRFS雖然與ZFS都有參考WAFL和CoW，但你必須知道，BTRFS是**借鑒**可以寫到無論何處的理念，不單單想成為Linux正統的CoW FS，而是充滿野心的大膽嘗試，跟Linux特性的深度結合，成為像是瑞士刀與變形金剛存在，絕對不是ZFS的拙劣模仿；而ZFS則是透過SDS(軟體定義儲存)對WAFL的最強模仿，甚至在某方面青出於藍。在開源領域，BTRFS與ZFS雖然也有持續互相借鑒，但核心理念與實現邏輯完全不同，雖然兩者唯二的共通點就是基於CoW和都能取代RAID，但BTRFS相比ZFS更加符合「File System」這個描述。
+> 在此，無論你有沒有看過或學過ZFS，BTRFS雖然與ZFS都有參考WAFL和CoW，但你必須知道，BTRFS是**借鑒**可以寫到無論何處的理念，不單單想成為Linux正統的CoW FS，而是充滿野心的大膽嘗試，跟Linux特性的深度結合，成為像是瑞士刀與變形金剛存在，絕對不是ZFS的拙劣模仿；而ZFS則是透過SDS(軟體定義儲存)對WAFL的最強模仿，甚至在某方面青出於藍。在開源領域，BTRFS與ZFS雖然也有持續互相借鑒，但核心理念與實現邏輯完全不同，雖然兩者唯二的共通點就是基於CoW和都能取代傳統RAID卡，但BTRFS相比ZFS更加符合「File System」這個描述。
 
 ## BTRFS新增和使用Snapshot
 正如前面所說，Snapshot是被歸類在Subvolume裡面，所以你要看Snapshot要怎麼用要輸入`sudo btrfs subvolume`才能看到怎麼用：
@@ -79,6 +79,8 @@ ID 261 gen 23690 top level 5 path @No_CoW
 ID 262 gen 45412 top level 256 path _Snapshots/SteamLibrary
 ```
 沒有錯的，今天當我「快照」一個子卷，其實就是複製一個Subvolume的B-Tree節點，並且共用同一筆資料，而且這個子卷有一個獨立ID，連影響增量備份的`gen`參數都一模一樣(剛好沒有遊戲更新)。只是因為整個硬碟我透過`@FURY`掛載在(硬碟的)根目錄，所以該Snapshot的父節點變成`256`，對應的路徑就是`@FURY_2T/_Snapshot`。
+
+因此在BTRFS中，子卷Subvolume是個**名詞**，快照Snapshot是個**動詞**(複製子卷)。
 
 其實這個時候對於被快照的子卷自身的資訊也會有影響:
 ```bash
@@ -167,7 +169,7 @@ $ sudo btrfs subvolume show _Snapshots/SteamLibrary/
         Snapshot(s):
         Quota group:            n/a
 
-# --------------
+# ===================================================================
 
 $ sudo btrfs subvolume show _Snapshots/ReadOnly_Steam/
 @FURY_2T/_Snapshots/ReadOnly_Steam
@@ -189,7 +191,7 @@ $ sudo btrfs subvolume show _Snapshots/ReadOnly_Steam/
         Snapshot(s):
         Quota group:            n/a
 ```
-看出來了嗎？`ReadOnly_Steam`的`Flags`欄位多了一個`readonly`，此時這個快照可以透過增量備份的方式傳輸到其他磁區了，這個我留到[快照增量傳輸](./快照增量傳輸.md)再說。
+看出來了嗎？`ReadOnly_Steam`的`Flags`欄位多了一個`readonly`，此時這個快照可以透過增量備份的方式傳輸到其他磁區了，這個我留到[子卷增量傳輸](./子卷增量傳輸.md)再說。
 
 那此時這個快照就無敵或者我只是想修改快照後再傳輸就不行嗎？不！btrfs-progs有個工具叫做`property`，可以設定不同目錄和子卷的設定，比如該子卷可以用更高的壓縮比，是否唯讀也是可以設定的，直接上範例：
 ```bash
@@ -239,7 +241,9 @@ ID 262 gen 45416 top level 256 path _Snapshots/SteamLibrary
 畢竟`rm -rf`是針對檔案操作，但是btrfs-progs是檔案系統層級的設定，Flags出現`readonly`是對於Coreutils的「降維打擊」，檔案系統的問題只能透過檔案系統的工具解決。
 
 ## 後話
-我其實本來還想直接接TimeShift甚至是Snapper，但是仔細展開太長了，我放到[Snapshot套件安裝與使用](Snapshot套件安裝與使用.md)再來說說吧，我真沒想到Snapshot展開東西比我設定`fstab`那篇還多...
+我其實本來還想直接接TimeShift甚至是Snapper，但是仔細展開太長了，我放到另外2篇再來說說吧，我真沒想到Snapshot展開東西比我設定`fstab`那篇還多...
+- TimeShift: [TimeShift_BTRFS模式安裝與設定](./TimeShift_BTRFS模式安裝與設定.md)
+- Snapper: [Snapper安裝與設定](./Snapper安裝與設定.md)
 
 # Reference
 - [BTRFS Docs - Subvolumes](https://btrfs.readthedocs.io/en/latest/Subvolumes.html)

@@ -1,7 +1,7 @@
 # WinBTRFS Mapping
 這是個血淋淋的教訓...我有一天只是跟朋友打完Trakov後在運行Windows的情況下打開女神任務玩一下，結果隔日回到Ubuntu來玩發現我的存檔存不了，跟我說無法打開指定路徑，然後想說有自動儲存，結果發現自動儲存也失效，最後點進遊戲的存檔資夾發現我要存的位置和自動儲存的`owner:group`變成了`nobody:users`，God damn，關卡重打，裝備重刷......，總之這場血淋淋的教訓讓我深究原因。
 
-一番調查後，發現winBTRFS有Mapping機制，如果你是直接在Linux掛載NTFS你會發現你可以直接用，甚至Windows權限怎麼設定不影響你的檔案權限，原因是Linux並不認識UAC，所以ntfs-3g在讀取檔案時會直接看誰先掛載這個磁區，誰先讀去來決定權限開給誰。但是BTRFS是Linux原生的檔案系統，而不事項NTFS這類外來種，所以winBTRFS會使用Mapping的機制將Windows的使用者與Linux使用者和群組進行對應，若在不設定的情況下任何User會對應`nobody`，Group會對應`users`，此時需要去設定winBTRFS的Mapping才可以避免這個問題。
+一番調查後，發現winBTRFS有Mapping機制，如果你是直接在Linux掛載NTFS你會發現你可以直接用，甚至Windows權限怎麼設定不影響你的檔案權限，原因是Linux並不認識UAC，所以ntfs-3g在讀取檔案時會直接看誰先掛載這個磁區，誰先讀去來決定權限開給誰。但是BTRFS是Linux原生的檔案系統，而不是像NTFS這類外來種，所以winBTRFS會使用Mapping的機制將Windows的使用者與Linux使用者和群組進行對應，若在不設定的情況下任何User會對應`nobody`，Group會對應`users`，此時需要去設定winBTRFS的Mapping才可以避免這個問題。
 
 在對應之前你需要先取得3個數值：你要Mapping的Linux uid、gid和Windows的SID，這樣才能完成`owner:group`的映射。
 
