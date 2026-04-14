@@ -3,7 +3,7 @@
 
 再接下來第二個月就反轉了，因為幾乎沒玩逃離塔科夫，所以Windows就幾乎沒開，前一個月至少Ubuntu再少也只有1、2天沒開，而這個月Windows可能1個星期才開1次，還是為了玩需用Radmin VPN連線的遊戲，日常使用幾乎沒切換過Windows
 
-正好也在這個拿到了新螢幕，是華碩的ProArt，藉由這個漂亮的螢幕可以看出Windows和Ubuntu的顏色差異，可以發現ProArt在Windows中對於藍色和綠色的範圍更廣，兒Ubuntu則是在紅色色域更廣，個人感覺ProArt在Ubuntu上面顏色上面更漂亮，差距也比較有感
+正好也在這個拿到了新螢幕，是華碩的ProArt，藉由這個漂亮的螢幕可以看出Windows和Ubuntu的顏色差異，可以發現ProArt在Windows中對於藍色和綠色的範圍更廣，而Ubuntu則是在紅色色域更廣，個人感覺ProArt在Ubuntu上面顏色上面更漂亮，差距也比較有感
 
 Windows ProArt色域：![](../Pictures/ProArt_Windows.png)
 

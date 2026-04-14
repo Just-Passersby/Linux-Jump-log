@@ -15,3 +15,5 @@
 - [Red Hat Docs - Chapter 15. Swap Space](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/storage_administration_guide/ch-swapspace)
 - [Smater Tools - Swap File Size Recommendations for Linux SmarterMail Installations](https://portal.smartertools.com/kb/a3754/swap-file-size-recommendations-for-linux-smartermail-installations.aspx)
 - [Red Hat Docs - Chapter 13. Getting started with swap](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/managing_storage_devices/getting-started-with-swap)
+- [Tsung's Blog - Linux 設定 vm.swappiness 調整 SWAP 使用時機](https://blog.longwin.com.tw/2024/05/linux-set-swap-ram-memory-usage-2024/)
+- [farseerfc - 【譯】替 swap 辯護：常見的誤解 ](https://farseerfc.me/in-defence-of-swap.html)

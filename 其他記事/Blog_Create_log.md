@@ -138,7 +138,16 @@ pnpm create astro@latest
 ## 建立Blog網頁
 打開Cloudflare Dashboard，首頁中間有個**Workers and Pages**，按下Start build，選擇Connect GitHub，你如果懶惰不是不能授權整個帳號，但保持最小原則概念，我這裡只授權我的Blog儲存庫。
 
-接下來因為Pages和Worker已經被整合了，如果你問AI大概率是舊資料(至少3/11凌晨問Sonnet 4.6和Gemini 3.1 Pro是這樣)，他現在會非常智能的抓環境，自動處理好build指令，Deploy指令預設也會生成好，不須修改，build的時候會自動安裝依賴，build完成後會自動跳轉，放著卡住就是有錯誤，沒錯誤就會看到Worker的Dashboard了。
+接下來因為Pages和Worker已經被整合了，如果你問AI大概率是舊資料(至少3/11凌晨問Sonnet 4.6和Gemini 3.1 Pro是這樣)，他現在會非常智能的抓環境，自動處理好build指令，Deploy指令預設也會生成好，不須修改，build的時候會自動安裝依賴，build完成後會自動跳轉，我自己就沒碰到錯誤，Build完後會發PR，用於讓你的Blog日後可以順利的在Cloudflare worker部屬，如果跟我一樣是靜態網頁，那Merge完後要修改`wrangler.jsonc`
+```json
+{
+  "name": "PROJECT-NAME",
+  "compatibility_date": "2025-09-27",
+  "assets": {
+    "directory": "./dist"
+  }
+}
+```
 
 此時就可以來綁定Domain了，在Worker右邊有個Domain & Routes，點進去後在第一行的Domain & Routes的右邊有個`+Add`，點進去綁選Custom Domain，綁定給人看Blog的網域，如果DNS是從Cloudflare買的或者代管，Cloudflare會自動幫忙處理好Worker和Domain的關係。
 
