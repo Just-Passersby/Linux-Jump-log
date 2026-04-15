@@ -91,19 +91,20 @@ ID 267 gen 173508 top level 5 path timeshift-btrfs/snapshots/2026-04-10_21-00-01
 ```
 
 # Timeshift的侷限
+
 ## 備份理念
 由於其設計理念上更偏向於MacOS的Time Machine，所以TimeShift特別強調和建議快照要用Rsync模式放在其他硬碟，避免系統碟損壞導致無法恢復。<br/>
 那為甚麼BTRFS下並不能這麼做？因為BTRFS的CoW特性讓建立快照變成原子事務(Atomic Transaction)，實現方式是直接對整個`/@`做Snapshot，並且其CoW特性讓這件事變成瞬間完成並且不增加硬碟佔用。如果跨磁區會讓瞬間完成和不增加硬碟佔用的特性失效(即使可以用去重但是不可避免的一定會在其他硬碟有至少一個系統大小的佔用)。<br/>
 BTRFS即使現在越來越主流，但對比Ext4使用率還是有段差距，並且TimeShift本來就有基於Rsync模式的跨硬碟備份，特地為了BTRFS設計一套專屬的跨硬碟備份模式徒增開發成本且同質性太高，你可能會跟我說「BTRFS有Send/Recive阿，用這個也能大幅縮短快照傳輸時間」，但TimeShift是要做好幾個備份，Send/Recive只能做到對單一子卷的增量傳輸，而且Rsync也能作到一樣的效果，所以回到同質性和開發/維護成本的問題。
 
-所以BTRFS其實是相對「雞肋」的模式，在TimeShift中，這個更像是一種最後保險，萬一系統真的掛了，你有辦法透過LiveCD掛載系統分區使用TimeShift還原的最後手段，那這顯然有能力規劃子卷和設定不如去用Snapper。<br/>
+所以BTRFS模式其實是相對「雞肋」的模式，這個雞肋感源自這模式會跟Snapper打對台以外，更主要是備份模式的錯位，在TimeShift中，這個更像是一種最後保險，萬一系統真的掛了，你有辦法透過LiveCD掛載系統分區使用TimeShift還原的最後手段，那這顯然是對技術有要求，如果你還有能力規劃子卷和設定不如去用Snapper，選用TimeShift更多是不想花時間規劃子卷，或者作為Ubuntu體系的使用者，你不想替Ubuntu逆天改命(風險收益不小，不亞於重裝系統)。<br/>
 或者是你今天想安裝一個套件然後有後悔藥，如果這個套件讓你系統怪怪的可以快速重開還原，以及你就是想要能幫系統快照但是你的儲存空間不允許你丟到其他硬碟並且你又剛好用BTRFS安裝系統，那快照速度對比Rsync很有優勢。
 
 ## 設定限制
 你如果有仔細觀察設定精靈和設定界面，你會發現除了系統排程以外沒有其他地方可以限制你的快照數量，他們只能限制那些Crontab自動執行的快照數量，對於手動建立的快照並不能限制，如果使用者會比較頻繁的手動建立快照，會需要考驗使用者的快照管理能力，如果不管制快照數量會導致硬碟佔用飆升(Rsync)或者碎片化(BTRFS)，且檔案刪除後還會無法釋放空間(Both)，最簡單的方式就是自己訂個數量，`O`的快照數完多過一個數字就把最早的刪掉。
 
 # 企業級還原力
-雖然TimeShift侷限比較多，但你真的有心，你還是可以做出類似openSUSE那套企業級的恢復力(BTRFS + GRUB + Snapper + YaST)，TimeShift直接把Snapper + YaST的部份吃掉了，只是快照管理需要使用者更加注意，雖然現在GRUB即將淘汰，但是Debian / Ubuntu體系目前還是GRUB，所以我們會需要安裝[grub-btrfs](https://github.com/Antynea/grub-btrfs) (需要注意這個Debian和Ubuntu需要自己編譯安裝，只有Arch可以直接用AUR)，讓我們可以把快照丟在GRUB上面回滾，這個時候再自己把APT hook + TimeShift + grub-btrfs串在一起，變成一套低成本的企業級回滾方案，開機後系統有問題可以重開機從GRUB回滾系統，這在Ubuntu上(26.04和之前的版本)尤為低成本(預設子卷布局)。<br/>
+雖然前面說TimeShift侷限比較多，但你真的有心，你還是可以做出類似openSUSE那套企業級的恢復力(BTRFS + GRUB + Snapper + YaST)，TimeShift直接把Snapper + YaST的部份吃掉了，只是快照管理需要使用者更加注意，雖然現在GRUB即將淘汰，但是Debian / Ubuntu體系目前還是GRUB，所以我們會需要安裝[grub-btrfs](https://github.com/Antynea/grub-btrfs) (需要注意這個Debian和Ubuntu需要自己編譯安裝，只有Arch可以直接用AUR)，讓我們可以把快照丟在GRUB上面回滾，這個時候再自己把APT hook + TimeShift + grub-btrfs串在一起，變成一套低成本的企業級回滾方案，開機後系統有問題可以重開機從GRUB回滾系統，這在Ubuntu上(26.04和之前的版本)尤為低成本(預設子卷布局)。<br/>
 礙於篇幅我這裡就不展開了，之後獨立寫一篇。
 
 # Reference
