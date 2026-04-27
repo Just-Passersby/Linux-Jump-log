@@ -23,6 +23,7 @@ sudo compsize $PATH
 
 如果要希望避免查詢root遇到EFI分區然後查詢失敗，可以用`-x`把搜尋範圍限定在單個檔案系統上，這樣就不會查到根目錄底下的其他檔案磁區和檔案系統了。\
 比如`sudo compsize -x /`
+> 雖然help是說`-x`是只看單一Filesystem，但在BTRFS情境下，直接說「單一子卷」會更合適，以Kubuntu來說`compsize -x /`他只檢查`/@`的狀態。
 
 輸出參考：
 ```bash
@@ -234,7 +235,7 @@ zstd         6%      1.0G          17G          17G
 看出來了嗎？3次I/O阿，而且CPU還要花比zstd更多的算力來壓縮，我們本來就有zstd了，該怎麼做？
 
 首先，把logrotate的定時壓縮關閉，這樣就可以讓壓縮這件事回歸到FS上了，避免寫完gzip還要讓OS嘗試壓縮一次。\
-再來，你可以近一步用duperemove做去重，這樣可以進一部省下空間，你說檔案重複機率高不高？你自己看看boot的log，就說重複率高不高：
+再來，你可以近一步用duperemove做去重，這樣可以進一步省下空間，你說檔案重複機率高不高？你自己看看boot的log，就說重複率高不高：
 ```bash
 user@user-X870-Elite-Ice:~$ sudo tail /var/log/boot.log.1
          Starting tailscaled.service - Tailscale node agent...
